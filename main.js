@@ -26,24 +26,27 @@ const auth = getAuth(app);
 const items = {
   wallet: {
     name: "財布",
-    unknown: "？？",
+    unknown: "？？？",
     imageId: "walletImage",
     image: "images/wallet.png",
-    message: "✨ 財布を発見！"
+    shadowImage: "images/walletshadow.png",
+    message: "財布を発見！"
   },
   key: {
     name: "鍵",
-    unknown: "？",
+    unknown: "？？",
     imageId: "keyImage",
     image: "images/key.png",
-    message: "🔑 鍵を発見！"
+    shadowImage: "images/keyshadow.png",
+    message: "鍵を発見！"
   },
   bear: {
     name: "ぬいぐるみ",
     unknown: "？？？？？",
     imageId: "bearImage",
     image: "images/bear.png",
-    message: "🧸 ぬいぐるみを発見！"
+    shadowImage: "images/bearshadow.png",
+    message: "ぬいぐるみを発見！"
   }
 };
 
@@ -97,4 +100,65 @@ function getItem(itemName) {
   saveToFirebase(itemName);
   updateScore();
   showPopup(items[itemName].message);
+}
+
+function showFoundItem(itemName) {
+  const item = items[itemName];
+  const itemText = document.getElementById(itemName);
+  const itemImage = document.getElementById(item.imageId);
+
+  itemText.textContent = item.name;
+  itemImage.src = item.image;
+}
+
+function updateScore() {
+  const foundCount = Object.keys(items).filter((itemName) => {
+    return localStorage.getItem(itemName) === "true";
+  }).length;
+
+  document.getElementById("score").textContent = `回収率: ${foundCount} / ${Object.keys(items).length}`;
+}
+
+function showPopup(message) {
+  const popup = document.getElementById("popup");
+
+  popup.textContent = message;
+  popup.style.display = "block";
+
+  setTimeout(() => {
+    popup.style.display = "none";
+  }, 1500);
+}
+
+async function saveToFirebase(itemName) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    return;
+  }
+
+  try {
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        [itemName]: true,
+        updatedAt: new Date().toISOString()
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function resetData() {
+  Object.keys(items).forEach((itemName) => {
+    const item = items[itemName];
+
+    localStorage.removeItem(itemName);
+    document.getElementById(itemName).textContent = item.unknown;
+    document.getElementById(item.imageId).src = item.shadowImage;
+  });
+
+  updateScore();
 }
