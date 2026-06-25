@@ -3,351 +3,43 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>落し物図鑑</title>
-
-  <style>
-    body {
-  font-family: sans-serif;
-  padding: 20px;
-
-  background: #f0f0f0;
-    }
-
-    .item {
-  margin: 20px;
-  padding: 20px;
-
-  width: 220px;
-
-  background: white;
-
-  border-radius: 20px;
-
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-
-  text-align: center;
-
-  display: inline-block;
-
-  vertical-align: top;
-
-  font-size: 24px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 18px;
-    }
-    #popup {
-      position: fixed;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-
-      background: black;
-      color: white;
-
-      padding: 20px 40px;
-      border-radius: 10px;
-
-      font-size: 32px;
-
-      display: none;
-    }
-    img {
-  border-radius: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-
   <h1>落し物図鑑</h1>
-  <h2 id="score">
-  回収率 0 / 3
-</h2>
 
- <div class="item">
+  <h2 id="score">回収率 0 / 3</h2>
 
-  <img
-    id="walletImage"
-    src="images/walletshadow.png"
-    width="120"
-  >
+  <main class="items">
+    <div class="item">
+      <img id="walletImage" src="images/walletshadow.png" width="120" alt="財布">
+      <div id="wallet">？？</div>
+    </div>
 
-  <div id="wallet">
-    ？？
+    <div class="item">
+      <img id="keyImage" src="images/keyshadow.png" width="120" alt="鍵">
+      <div id="key">？</div>
+    </div>
+
+    <div class="item">
+      <img id="bearImage" src="images/bearshadow.png" width="120" alt="ぬいぐるみ">
+      <div id="bear">？？？？？</div>
+    </div>
+  </main>
+
+  <div class="buttons">
+    <button type="button" id="getWalletButton">財布を拾う</button>
+    <button type="button" id="getKeyButton">鍵を拾う</button>
+    <button type="button" id="getBearButton">ぬいぐるみを拾う</button>
+    <button type="button" id="resetButton">データをリセット</button>
   </div>
 
-</div>
+  <div id="popup">アイテムを発見！</div>
 
-  <div class="item">
-
-  <img
-    id="keyImage"
-    src="images/keyshadow.png"
-    width="120"
-  >
-
-  <div id="key">
-    ？
-  </div>
-
-</div>
-
-<div class="item">
-
-  <img
-    id="bearImage"
-    src="images/bearshadow.png"
-    width="120"
-  >
-
-  <div id="bear">
-    ？？？？？
-  </div>
-
-</div>
-
-  <button onclick="getWallet()">
-    財布を拾う
-  </button>
-
-  <button onclick="getKey()">
-    鍵を拾う
-  </button>
-
-  <button onclick="getBear()">
-    ぬいぐるみを拾う
-  </button>
-
-  <button onclick="resetData()">
-  データをリセット
-</button>
-
-<div id="popup">
-  アイテムを発見！
-</div>
-
-  <script type="module">
-    
-  // Import the functions you need from the SDKs you need
-  import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc
-}
-from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
-
-import {
-  getAuth,
-  signInAnonymously
-}
-from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBlkQbekO4OcFR8pyOBVRg0Vrimc4eliUI",
-    authDomain: "shibaurasai2026.firebaseapp.com",
-    projectId: "shibaurasai2026",
-    storageBucket: "shibaurasai2026.firebasestorage.app",
-    messagingSenderId: "114412669622",
-    appId: "1:114412669622:web:255a3ab1374b33b8ff7417",
-    measurementId: "G-24DV15W8KD"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-    // ページを開いた時
-    window.onload = function () {
-      signInAnonymously(auth)
-        .then(() => {
-
-          console.log("匿名ログイン成功");
-
-       })
-        .catch((error) => {
-
-         console.log(error);
-
-       });
-
-      // 財布
-      if (localStorage.getItem("wallet") === "true") {
-
-      document.getElementById("wallet").innerText =
-      "財布 ✅";
-
-      document.getElementById("walletImage").src =
-    "images/wallet.png";
-      }
-
-      // 鍵
-      if (localStorage.getItem("key") === "true") {
-
-  document.getElementById("key").innerText =
-    "鍵 ✅";
-
-  document.getElementById("keyImage").src =
-    "images/key.png";
-      }
-      // ぬいぐるみ
-      if (localStorage.getItem("bear") === "true") {
-
-  document.getElementById("bear").innerText =
-    "ぬいぐるみ ✅";
-
-  document.getElementById("bearImage").src =
-    "images/bear.png";
-      }
-      updateScore();
-      const params =
-  new URLSearchParams(location.search);
-
-const item =
-  params.get("item");
-
-if (item === "wallet") {
-  getWallet();
-}
-
-if (item === "key") {
-  getKey();
-}
-
-if (item === "bear") {
-  getBear();
-}
-    };
-
-    // 財布を拾う
-    function getWallet() {
-
-  document.getElementById("wallet").innerText =
-    "財布 ✅";
-
-  document.getElementById("walletImage").src =
-    "images/wallet.png";
-
-  localStorage.setItem("wallet", "true");
-  saveToFirebase("wallet");
-  updateScore();
-  showPopup("✨ 財布を発見！");
-  }
-
-
-    // 鍵を拾う
-    function getKey() {
-
-      document.getElementById("key").innerText =
-        "鍵 ✅";
-
-      document.getElementById("keyImage").src =
-    "images/key.png";
-
-      localStorage.setItem("key", "true");
-      saveToFirebase("key");
-      updateScore();
-      
-      showPopup("🔑 鍵を発見！");
-    }
-
-    // ぬいぐるみを拾う
-  
-    function getBear() {
-
-      document.getElementById("bear").innerText =
-        "ぬいぐるみ ✅";
-
-      document.getElementById("bearImage").src =
-    "images/bear.png";
-
-      localStorage.setItem("bear", "true");
-      saveToFirebase("bear");
-      updateScore();
-      showPopup("🧸 ぬいぐるみを発見！");
-    }
-  function updateScore() {
-
-  let count = 0;
-
-  // 財布
-  if (localStorage.getItem("wallet") === "true") {
-    count++;
-  }
-
-  // 鍵
-  if (localStorage.getItem("key") === "true") {
-    count++;
-  }
-
-  // ぬいぐるみ
-  if (localStorage.getItem("bear") === "true") {
-    count++;
-  }
-
-  document.getElementById("score").innerText =
-    "回収率 " + count + " / 3";
-  }
-  function showPopup(text) {
-
-  const popup =
-    document.getElementById("popup");
-
-  popup.innerText = text;
-
-  popup.style.display = "block";
-
-  setTimeout(function () {
-
-    popup.style.display = "none";
-
-  }, 2000);
-
-}
-  function resetData() {
-  
-  localStorage.clear();
-
-  location.reload();
-}
-window.getWallet = getWallet;
-window.getKey = getKey;
-window.getBear = getBear;
-window.resetData = resetData;
-
-async function saveToFirebase(itemName) {
-
-  const user = auth.currentUser;
-
-  await setDoc(
-    doc(
-      db,
-      "users",
-      user.uid,
-      "items",
-      itemName
-    ),
-    {
-      found: true
-    }
-  );
-
-  console.log(itemName + " saved!");
-}
-  </script>
-
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>
-
-<!-- test -->
