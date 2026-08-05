@@ -63,6 +63,8 @@ window.addEventListener("load", async () => {
   collectItemFromUrl();
 });
 
+
+//ボタンでできるように（後で消す）
 document.getElementById("getWalletButton").addEventListener("click", () => {
   getItem("wallet");
 });
@@ -76,6 +78,8 @@ document.getElementById("getBearButton").addEventListener("click", () => {
 });
 
 document.getElementById("resetButton").addEventListener("click", resetData);
+
+
 
 function loadFoundItems() {
   Object.keys(items).forEach((itemName) => {
@@ -150,7 +154,7 @@ async function saveToFirebase(itemName) {
     console.log(error);
   }
 }
-
+//リセットする時（最後は消す）
 function resetData() {
   Object.keys(items).forEach((itemName) => {
     const item = items[itemName];
