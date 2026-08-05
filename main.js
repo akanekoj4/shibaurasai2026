@@ -23,34 +23,66 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const items = {
-  wallet: {
+const itemList = [
+  {
+    id: "wallet",
     name: "財布",
     unknown: "？？？",
-    imageId: "walletImage",
     image: "images/wallet.png",
     shadowImage: "images/walletshadow.png",
     message: "財布を発見！"
   },
-  key: {
+  {
+    id: "key",
     name: "鍵",
     unknown: "？？",
-    imageId: "keyImage",
     image: "images/key.png",
     shadowImage: "images/keyshadow.png",
     message: "鍵を発見！"
   },
-  bear: {
+  {
+    id: "bear",
     name: "ぬいぐるみ",
     unknown: "？？？？？",
-    imageId: "bearImage",
     image: "images/bear.png",
     shadowImage: "images/bearshadow.png",
     message: "ぬいぐるみを発見！"
+  },
+  {
+    id: "item4",
+    name: "アイテム4",
+    unknown: "？？？？",
+    image: "",
+    shadowImage: "",
+    message: "アイテムを発見！",
+    locked: true
+  },
+  {
+    id: "item5",
+    name: "アイテム5",
+    unknown: "？？？？",
+    image: "",
+    shadowImage: "",
+    message: "アイテムを発見！",
+    locked: true
+  },
+  {
+    id: "item6",
+    name: "アイテム6",
+    unknown: "？？？？",
+    image: "",
+    shadowImage: "",
+    message: "アイテムを発見！",
+    locked: true
   }
-};
+];
+
+const items = Object.fromEntries(itemList.map((item) => [item.id, item]));
 
 window.addEventListener("load", async () => {
+  renderItems();
+  bindLegacyButtons();
+
   try {
     await signInAnonymously(auth);
     console.log("匿名ログイン成功");
@@ -63,28 +95,63 @@ window.addEventListener("load", async () => {
   collectItemFromUrl();
 });
 
+function renderItems() {
+  const itemGrid = document.getElementById("items");
 
-//ボタンでできるように（後で消す）
-document.getElementById("getWalletButton").addEventListener("click", () => {
-  getItem("wallet");
-});
+  itemGrid.innerHTML = itemList.map((item) => {
+    return `
+      <button class="item-card" type="button" data-item-id="${item.id}" ${item.locked ? "disabled" : ""}>
+        <span class="item-image-frame">
+          ${renderItemImage(item)}
+        </span>
+        <span id="${item.id}" class="item-name">${item.unknown}</span>
+      </button>
+    `;
+  }).join("");
 
-document.getElementById("getKeyButton").addEventListener("click", () => {
-  getItem("key");
-});
+  itemList.forEach((item) => {
+    if (item.locked) {
+      return;
+    }
 
-document.getElementById("getBearButton").addEventListener("click", () => {
-  getItem("bear");
-});
+    document.querySelector(`[data-item-id="${item.id}"]`).addEventListener("click", () => {
+      getItem(item.id);
+    });
+  });
+}
 
-document.getElementById("resetButton").addEventListener("click", resetData);
+function renderItemImage(item) {
+  if (!item.shadowImage) {
+    return `<span id="${item.id}Image" class="image-placeholder" aria-hidden="true"></span>`;
+  }
 
+  return `<img id="${item.id}Image" src="${item.shadowImage}" alt="${item.name}">`;
+}
 
+function bindLegacyButtons() {
+  const buttonMap = {
+    getWalletButton: "wallet",
+    getKeyButton: "key",
+    getBearButton: "bear"
+  };
+
+  Object.entries(buttonMap).forEach(([buttonId, itemId]) => {
+    const button = document.getElementById(buttonId);
+
+    if (button) {
+      button.addEventListener("click", () => {
+        getItem(itemId);
+      });
+    }
+  });
+
+  document.getElementById("resetButton")?.addEventListener("click", resetData);
+}
 
 function loadFoundItems() {
-  Object.keys(items).forEach((itemName) => {
-    if (localStorage.getItem(itemName) === "true") {
-      showFoundItem(itemName);
+  itemList.forEach((item) => {
+    if (localStorage.getItem(item.id) === "true") {
+      showFoundItem(item.id);
     }
   });
 }
@@ -93,7 +160,7 @@ function collectItemFromUrl() {
   const params = new URLSearchParams(location.search);
   const itemName = params.get("item");
 
-  if (items[itemName]) {
+  if (items[itemName] && !items[itemName].locked) {
     getItem(itemName);
   }
 }
@@ -109,28 +176,41 @@ function getItem(itemName) {
 function showFoundItem(itemName) {
   const item = items[itemName];
   const itemText = document.getElementById(itemName);
-  const itemImage = document.getElementById(item.imageId);
+  const itemImage = document.getElementById(`${itemName}Image`);
+
+  if (!item || !itemText || !itemImage) {
+    return;
+  }
 
   itemText.textContent = item.name;
-  itemImage.src = item.image;
+
+  if (itemImage.tagName === "IMG" && item.image) {
+    itemImage.src = item.image;
+  }
+
+  document.querySelector(`[data-item-id="${itemName}"]`)?.classList.add("found");
 }
 
 function updateScore() {
-  const foundCount = Object.keys(items).filter((itemName) => {
-    return localStorage.getItem(itemName) === "true";
+  const collectibleItems = itemList.filter((item) => !item.locked);
+  const foundCount = collectibleItems.filter((item) => {
+    return localStorage.getItem(item.id) === "true";
   }).length;
+  const totalCount = collectibleItems.length;
+  const percentage = totalCount === 0 ? 0 : (foundCount / totalCount) * 100;
 
-  document.getElementById("score").textContent = `回収率: ${foundCount} / ${Object.keys(items).length}`;
+  document.getElementById("score").textContent = `${foundCount} / ${totalCount}`;
+  document.getElementById("scoreProgress").style.width = `${percentage}%`;
 }
 
 function showPopup(message) {
   const popup = document.getElementById("popup");
 
   popup.textContent = message;
-  popup.style.display = "block";
+  popup.classList.add("show");
 
   setTimeout(() => {
-    popup.style.display = "none";
+    popup.classList.remove("show");
   }, 1500);
 }
 
@@ -154,14 +234,23 @@ async function saveToFirebase(itemName) {
     console.log(error);
   }
 }
-//リセットする時（最後は消す）
-function resetData() {
-  Object.keys(items).forEach((itemName) => {
-    const item = items[itemName];
 
-    localStorage.removeItem(itemName);
-    document.getElementById(itemName).textContent = item.unknown;
-    document.getElementById(item.imageId).src = item.shadowImage;
+function resetData() {
+  itemList.forEach((item) => {
+    const itemText = document.getElementById(item.id);
+    const itemImage = document.getElementById(`${item.id}Image`);
+
+    localStorage.removeItem(item.id);
+
+    if (itemText) {
+      itemText.textContent = item.unknown;
+    }
+
+    if (itemImage?.tagName === "IMG" && item.shadowImage) {
+      itemImage.src = item.shadowImage;
+    }
+
+    document.querySelector(`[data-item-id="${item.id}"]`)?.classList.remove("found");
   });
 
   updateScore();
