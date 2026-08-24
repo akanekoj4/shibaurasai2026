@@ -82,6 +82,7 @@ const items = Object.fromEntries(itemList.map((item) => [item.id, item]));
 window.addEventListener("load", async () => {
   renderItems();
   bindLegacyButtons();
+  bindPopup();
 
   try {
     await signInAnonymously(auth);
@@ -170,7 +171,7 @@ function getItem(itemName) {
   localStorage.setItem(itemName, "true");
   saveToFirebase(itemName);
   updateScore();
-  showPopup(items[itemName].message);
+  showPopup(items[itemName]);
 }
 
 function showFoundItem(itemName) {
@@ -203,15 +204,35 @@ function updateScore() {
   document.getElementById("scoreProgress").style.width = `${percentage}%`;
 }
 
-function showPopup(message) {
+function bindPopup() {
+  document.getElementById("popupCloseButton")?.addEventListener("click", hidePopup);
+}
+
+function showPopup(item) {
+  const popup = document.getElementById("popup");
+  const title = document.getElementById("popupTitle");
+  const image = document.getElementById("popupItemImage");
+
+  if (!popup || !title || !image) {
+    return;
+  }
+
+  title.textContent = `${item.name}をみつけた！`;
+  image.src = item.image || item.shadowImage;
+  image.alt = item.name;
+  popup.setAttribute("aria-hidden", "false");
+  popup.classList.add("show");
+}
+
+function hidePopup() {
   const popup = document.getElementById("popup");
 
-  popup.textContent = message;
-  popup.classList.add("show");
+  if (!popup) {
+    return;
+  }
 
-  setTimeout(() => {
-    popup.classList.remove("show");
-  }, 1500);
+  popup.classList.remove("show");
+  popup.setAttribute("aria-hidden", "true");
 }
 
 async function saveToFirebase(itemName) {

@@ -28,7 +28,18 @@
       </section>
     </main>
 
-    <div id="popup" class="popup" role="status" aria-live="polite">アイテムを発見！</div>
+    <section id="popup" class="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle" aria-hidden="true">
+      <div class="get-card">
+        <img class="get-card-shadow" src="images/figma-get-card-shadow.svg" alt="" aria-hidden="true">
+        <img class="get-card-ribbon" src="images/figma-get-card-ribbon.svg" alt="" aria-hidden="true">
+        <span class="get-card-label" aria-hidden="true">GET</span>
+        <span class="get-item-image-frame">
+          <img id="popupItemImage" class="get-item-image" alt="">
+        </span>
+        <p id="popupTitle" class="get-item-message" aria-live="polite"></p>
+        <button id="popupCloseButton" class="get-card-close" type="button">OK！</button>
+      </div>
+    </section>
 
     <div class="legacy-controls" aria-hidden="true">
       <button type="button" id="getWalletButton" tabindex="-1">財布を拾う</button>
