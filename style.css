@@ -40,7 +40,8 @@ h2, p { margin: 0; }
 .get-item-message { display: flex; align-items: center; justify-content: center; width: 216px; height: 54px; margin: 0; color: #000; font-size: 27px; font-weight: 500; line-height: normal; text-align: center; }
 .get-card-close { display: grid; place-items: center; width: 202px; height: 44px; padding: 1px 63px; border: 0; border-radius: 22px; background: #fd8ec4; box-shadow: 2px 3px 2px #e56ab3; color: #fff; font-family: inherit; font-size: 27px; font-weight: 500; line-height: normal; cursor: pointer; }
 .get-card-close:active { transform: translateY(1px); box-shadow: 1px 1px 1px #e56ab3; }
-.legacy-controls { display: none; }
+.legacy-controls { position: fixed; top: 10px; left: 50%; z-index: 40; transform: translateX(-50%); }
+.legacy-controls button { padding: 6px 10px; border: 1px solid #b77aa2; border-radius: 999px; background: #fff; color: #7d3c68; font-family: inherit; font-size: 12px; cursor: pointer; }
 
 .bottom-nav { position: fixed; right: 0; bottom: 0; left: 0; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); width: min(100%, 393px); height: 74px; margin: 0 auto; padding: 48px 14px 12px 15px; background: #fffdfe; box-shadow: 0 -3px 3px #eae4fd; }
 .nav-vectors { position: absolute; top: 9px; left: calc(50% - 132.507px); width: 265.014px; height: 31.697px; pointer-events: none; }
