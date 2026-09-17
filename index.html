@@ -10,7 +10,7 @@
 
 <body>
   <div class="app-shell">
-    <main class="home-screen">
+    <main id="homeScreen" class="home-screen app-view">
       <section class="score-card" aria-labelledby="scoreTitle">
         <div class="score-content">
           <h2 id="scoreTitle">回収率</h2>
@@ -28,10 +28,19 @@
       </section>
     </main>
 
+    <main id="catalogScreen" class="catalog-screen app-view" aria-hidden="true" aria-labelledby="catalogTitle">
+      <h1 id="catalogTitle" class="sr-only">図鑑</h1>
+      <img class="catalog-book" src="images/figma-catalog-book-figma.svg" alt="" aria-hidden="true">
+      <img class="catalog-bookmark" src="images/figma-catalog-bookmark-figma.svg" alt="" aria-hidden="true">
+      <section class="catalog-index" aria-label="図鑑の目次">
+        <div id="catalogCards" class="catalog-grid"></div>
+      </section>
+    </main>
+
     <section id="popup" class="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle" aria-hidden="true">
       <div class="get-card">
-        <img class="get-card-shadow" src="images/figma-get-card-shadow.svg" alt="" aria-hidden="true">
-        <img class="get-card-ribbon" src="images/figma-get-card-ribbon.svg" alt="" aria-hidden="true">
+        <img class="get-card-shadow" src="images/figma-get-card-shadow-figma.svg" alt="" aria-hidden="true">
+        <img class="get-card-ribbon" src="images/figma-get-card-ribbon-figma.svg" alt="" aria-hidden="true">
         <span class="get-card-label" aria-hidden="true">GET</span>
         <span class="get-item-image-frame">
           <img id="popupItemImage" class="get-item-image" alt="">
@@ -41,22 +50,23 @@
       </div>
     </section>
 
-    <div class="legacy-controls" aria-label="開発用コントロール">
-      <button type="button" id="getWalletButton" hidden>財布を拾う</button>
-      <button type="button" id="getKeyButton" hidden>鍵を拾う</button>
-      <button type="button" id="getBearButton" hidden>ぬいぐるみを拾う</button>
-      <button type="button" id="resetButton">開発用：データをリセット</button>
+    <!-- ここボタンなのでいらない -->
+    <div class="legacy-controls" aria-hidden="true">
+      <button type="button" id="getWalletButton" tabindex="-1">財布を拾う</button>
+      <button type="button" id="getKeyButton" tabindex="-1">鍵を拾う</button>
+      <button type="button" id="getBearButton" tabindex="-1">ぬいぐるみを拾う</button>
+      <button type="button" id="resetButton" tabindex="-1">データをリセット</button>
     </div>
 
     <nav class="bottom-nav" aria-label="メインナビゲーション">
-      <img class="nav-vectors" src="images/figma-bottom-nav-icons.svg" alt="" aria-hidden="true">
-      <a class="nav-item active" href="#" aria-current="page">
+      <img class="nav-vectors" src="images/figma-bottom-nav-icons-figma.svg" alt="" aria-hidden="true">
+      <a class="nav-item active" href="#home" data-view="home" aria-current="page">
         <span>ホーム</span>
       </a>
-      <a class="nav-item" href="#">
+      <a class="nav-item" href="#catalog" data-view="catalog">
         <span>図鑑</span>
       </a>
-      <a class="nav-item" href="#">
+      <a class="nav-item" href="#map" data-view="map">
         <span>マップ</span>
       </a>
     </nav>

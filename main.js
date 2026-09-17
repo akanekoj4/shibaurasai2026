@@ -79,10 +79,21 @@ const itemList = [
 
 const items = Object.fromEntries(itemList.map((item) => [item.id, item]));
 
+const catalogItems = itemList.map((item) => ({
+  id: item.id,
+  name: item.name,
+  // Figma の図鑑目次ノード（23:93）にある固定ラベル。
+  catalogLabel: "○○○○",
+  // 透明背景の画像を追加するときは、ここへ "images/xxx.png" を設定します。
+  catalogImage: ""
+}));
+
 window.addEventListener("load", async () => {
   renderItems();
+  renderCatalogIndex();
   bindLegacyButtons();
   bindPopup();
+  bindNavigation();
 
   try {
     await signInAnonymously(auth);
@@ -110,14 +121,71 @@ function renderItems() {
     `;
   }).join("");
 
-  itemList.forEach((item) => {
-    if (item.locked) {
-      return;
-    }
+}
 
-    document.querySelector(`[data-item-id="${item.id}"]`).addEventListener("click", () => {
-      getItem(item.id);
+function renderCatalogIndex() {
+  const catalogCards = document.getElementById("catalogCards");
+
+  if (!catalogCards) {
+    return;
+  }
+
+  catalogCards.innerHTML = catalogItems.map((item) => {
+    const image = item.catalogImage
+      ? `<img class="catalog-card-image" src="${item.catalogImage}" alt="">`
+      : `<span class="catalog-card-placeholder" aria-hidden="true"></span>`;
+
+    return `
+      <button class="catalog-card" type="button" data-catalog-item-id="${item.id}">
+        <span class="catalog-card-image-frame">${image}</span>
+        <span class="catalog-card-name">${item.catalogLabel}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function bindNavigation() {
+  document.querySelectorAll("[data-view]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const view = link.dataset.view;
+
+      if (view === "map") {
+        event.preventDefault();
+        return;
+      }
+
+      showView(view);
     });
+  });
+
+  window.addEventListener("hashchange", () => {
+    showView(location.hash === "#catalog" ? "catalog" : "home");
+  });
+
+  showView(location.hash === "#catalog" ? "catalog" : "home");
+
+  document.querySelectorAll("[data-catalog-item-id]").forEach((card) => {
+    card.addEventListener("click", () => {
+      // 図鑑ページ実装時に、この data-catalog-item-id をページ遷移先として使います。
+    });
+  });
+}
+
+function showView(view) {
+  if (view === "map") {
+    return;
+  }
+
+  const isCatalog = view === "catalog";
+  document.getElementById("homeScreen").hidden = isCatalog;
+  document.getElementById("catalogScreen").classList.toggle("is-active", isCatalog);
+  document.getElementById("catalogScreen").setAttribute("aria-hidden", String(!isCatalog));
+  document.body.classList.toggle("catalog-view", isCatalog);
+
+  document.querySelectorAll("[data-view]").forEach((link) => {
+    const isActive = link.dataset.view === view;
+    link.classList.toggle("active", isActive);
+    link.toggleAttribute("aria-current", isActive);
   });
 }
 
