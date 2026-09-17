@@ -88,9 +88,12 @@ const catalogItems = itemList.map((item) => ({
   catalogImage: ""
 }));
 
+let currentCatalogDetailIndex = 0;
+
 window.addEventListener("load", async () => {
   renderItems();
   renderCatalogIndex();
+  bindCatalogDetailSwipe();
   bindLegacyButtons();
   bindPopup();
   bindNavigation();
@@ -166,7 +169,7 @@ function bindNavigation() {
 
   document.querySelectorAll("[data-catalog-item-id]").forEach((card) => {
     card.addEventListener("click", () => {
-      // 図鑑ページ実装時に、この data-catalog-item-id をページ遷移先として使います。
+      showCatalogDetail(card.dataset.catalogItemId);
     });
   });
 }
@@ -178,6 +181,8 @@ function showView(view) {
 
   const isCatalog = view === "catalog";
   document.getElementById("homeScreen").hidden = isCatalog;
+  document.getElementById("catalogDetailScreen").classList.remove("is-active");
+  document.getElementById("catalogDetailScreen").setAttribute("aria-hidden", "true");
   document.getElementById("catalogScreen").classList.toggle("is-active", isCatalog);
   document.getElementById("catalogScreen").setAttribute("aria-hidden", String(!isCatalog));
   document.body.classList.toggle("catalog-view", isCatalog);
@@ -186,6 +191,85 @@ function showView(view) {
     const isActive = link.dataset.view === view;
     link.classList.toggle("active", isActive);
     link.toggleAttribute("aria-current", isActive);
+  });
+}
+
+function showCatalogDetail(itemId) {
+  const itemIndex = catalogItems.findIndex((item) => item.id === itemId);
+
+  if (itemIndex === -1) {
+    return;
+  }
+
+  currentCatalogDetailIndex = itemIndex;
+  renderCatalogDetail(catalogItems[itemIndex]);
+
+  document.getElementById("catalogScreen").classList.remove("is-active");
+  document.getElementById("catalogScreen").setAttribute("aria-hidden", "true");
+  document.getElementById("catalogDetailScreen").classList.add("is-active");
+  document.getElementById("catalogDetailScreen").setAttribute("aria-hidden", "false");
+  document.body.classList.add("catalog-view");
+}
+
+function renderCatalogDetail(catalogItem) {
+  const item = items[catalogItem.id];
+  const found = localStorage.getItem(item.id) === "true";
+  const detailScreen = document.getElementById("catalogDetailScreen");
+  const image = document.getElementById("catalogDetailImage");
+  const title = document.getElementById("catalogDetailTitle");
+  const description = document.getElementById("catalogDetailDescriptionText");
+  const badge = document.getElementById("catalogDetailBadge");
+  const badgeOuter = document.getElementById("catalogDetailBadgeOuter");
+  const badgeInner = document.getElementById("catalogDetailBadgeInner");
+  const badgeText = document.getElementById("catalogDetailBadgeText");
+
+  detailScreen.classList.toggle("is-found", found);
+  detailScreen.classList.toggle("is-unfound", !found);
+  if (found && item.image) {
+    image.src = item.image;
+    image.alt = item.name;
+  } else {
+    image.removeAttribute("src");
+    image.alt = "";
+  }
+  title.textContent = found ? item.name : "○○○○";
+  description.textContent = found ? `${item.name}をみつけた！` : "○○○○○○\n○○";
+  badgeOuter.src = found
+    ? "images/figma-catalog-found-badge-outer.svg"
+    : "images/figma-catalog-unfound-badge-outer.svg";
+  badgeInner.src = found
+    ? "images/figma-catalog-found-badge-inner.svg"
+    : "images/figma-catalog-unfound-badge-inner.svg";
+  badgeText.textContent = found ? "GET!" : "???";
+}
+
+function bindCatalogDetailSwipe() {
+  const detailScreen = document.getElementById("catalogDetailScreen");
+  let startX = null;
+
+  detailScreen.addEventListener("pointerdown", (event) => {
+    startX = event.clientX;
+  });
+
+  detailScreen.addEventListener("pointerup", (event) => {
+    if (startX === null) {
+      return;
+    }
+
+    const distance = event.clientX - startX;
+    startX = null;
+
+    if (Math.abs(distance) < 48) {
+      return;
+    }
+
+    const direction = distance < 0 ? 1 : -1;
+    const nextIndex = (currentCatalogDetailIndex + direction + catalogItems.length) % catalogItems.length;
+    showCatalogDetail(catalogItems[nextIndex].id);
+  });
+
+  detailScreen.addEventListener("pointercancel", () => {
+    startX = null;
   });
 }
 

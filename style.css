@@ -30,6 +30,36 @@ h2, p { margin: 0; }
 .catalog-card:active { transform: translateY(1px); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
+.catalog-detail-screen { display: none; position: relative; width: 393px; height: 783px; min-height: 783px; margin: -80px auto -114px; overflow: hidden; background: #e7dbfc; touch-action: pan-y; }
+.catalog-detail-screen.is-active { display: block; }
+.catalog-detail-book, .catalog-detail-bookmark { position: absolute; pointer-events: none; }
+.catalog-detail-book { width: 771.541px; height: 530.755px; }
+.catalog-detail-bookmark { z-index: 1; width: 47.5687px; height: 254.279px; }
+.catalog-detail-screen.is-found .catalog-detail-book { top: 129.21px; left: -378.54px; }
+.catalog-detail-screen.is-found .catalog-detail-bookmark { top: 132.28px; left: -9.86px; }
+.catalog-detail-screen.is-unfound .catalog-detail-book { top: 127.15px; left: -378.77px; }
+.catalog-detail-screen.is-unfound .catalog-detail-bookmark { top: 130.22px; left: -8.09px; }
+.catalog-detail-title { position: absolute; z-index: 2; display: flex; align-items: center; width: 237.325px; height: 56.569px; margin: 0; color: #000; font-size: 52px; font-weight: 500; line-height: normal; letter-spacing: normal; }
+.catalog-detail-screen.is-found .catalog-detail-title { top: 173.865px; left: 59.38px; }
+.catalog-detail-screen.is-unfound .catalog-detail-title { top: 171.805px; left: 59.15px; }
+.catalog-detail-image-frame { position: absolute; z-index: 2; display: grid; place-items: center; width: 207.833px; height: 153.82px; overflow: hidden; background: #d9d9d9; }
+.catalog-detail-screen.is-found .catalog-detail-image-frame { top: 314.02px; left: 55.35px; }
+.catalog-detail-screen.is-unfound .catalog-detail-image-frame { top: 311.96px; left: 55.12px; }
+.catalog-detail-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.catalog-detail-description { position: absolute; z-index: 2; width: 310.59px; height: 116.908px; margin: 0; border: 3px solid #f0c985; border-radius: 24px; }
+.catalog-detail-screen.is-found .catalog-detail-description { top: 494.66px; left: 4.23px; }
+.catalog-detail-screen.is-unfound .catalog-detail-description { top: 492.6px; left: 4px; }
+.catalog-detail-description-label { position: absolute; top: 3.993px; left: 10.99px; display: flex; align-items: center; width: 77.748px; height: 32.433px; margin: 0; color: #5762f2; font-size: 22px; font-weight: 500; line-height: normal; letter-spacing: normal; }
+.catalog-detail-description-text { position: absolute; top: 43.987px; left: 12.85px; display: flex; align-items: center; width: 292.474px; height: 54.306px; margin: 0; color: #000; font-size: 17px; font-weight: 500; line-height: normal; letter-spacing: normal; white-space: pre-line; }
+.catalog-detail-badge { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.catalog-detail-badge-outer, .catalog-detail-badge-inner, .catalog-detail-badge-text { position: absolute; display: block; }
+.catalog-detail-screen.is-found .catalog-detail-badge-outer { top: 408.45px; left: 228.61px; width: 92.2096px; height: 92.2096px; }
+.catalog-detail-screen.is-found .catalog-detail-badge-inner { top: 415.605px; left: 235.765px; width: 73.8928px; height: 73.8928px; transform: rotate(17.41deg); }
+.catalog-detail-screen.is-found .catalog-detail-badge-text { top: 420.36px; left: 232.35px; display: grid; place-items: center; width: 80.732px; height: 62.778px; color: #fd83c6; font-size: 28px; font-weight: 500; line-height: normal; letter-spacing: normal; text-shadow: 2px 2px 4px rgba(0, 0, 0, .25); transform: rotate(-19.96deg); }
+.catalog-detail-screen.is-unfound .catalog-detail-badge-outer { top: 408.39px; left: 230.38px; width: 84.2096px; height: 84.2096px; }
+.catalog-detail-screen.is-unfound .catalog-detail-badge-inner { top: 418.275px; left: 239.535px; width: 65.8928px; height: 65.8928px; transform: rotate(17.41deg); }
+.catalog-detail-screen.is-unfound .catalog-detail-badge-text { top: 421.89px; left: 241.99px; display: grid; place-items: center; width: 60.994px; height: 55.608px; color: #c293f3; font-size: 28px; font-weight: 500; line-height: normal; letter-spacing: normal; transform: rotate(-19.96deg); }
+
 .score-card { display: block; width: 364px; min-height: 201px; margin: 0 auto 10px; padding: 31px 139px 22px 29px; border: 3px solid #f7d9fc; border-radius: 8px; background: linear-gradient(270deg, #fcf6fe 0%, #fefcfd 100%); }
 .score-content h2, .collection-section h2 { font-size: 26px; font-weight: 500; line-height: normal; }
 .score-number { width: max-content; margin: 10px 0 10px 31px; padding: 10px 10px 10px 0; font-size: 38px; font-weight: 500; line-height: normal; white-space: nowrap; }
