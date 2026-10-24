@@ -89,7 +89,6 @@ const catalogItems = itemList.map((item) => ({
 }));
 
 let currentCatalogDetailIndex = 0;
-let hasShownCatalogSwipeHint = false;
 
 window.addEventListener("load", async () => {
   renderItems();
@@ -210,20 +209,21 @@ function showCatalogDetail(itemId) {
   document.getElementById("catalogDetailScreen").classList.add("is-active");
   document.getElementById("catalogDetailScreen").setAttribute("aria-hidden", "false");
   document.body.classList.add("catalog-view");
-  playCatalogSwipeHint();
+  renderCatalogPageIndicator();
 }
 
-function playCatalogSwipeHint() {
-  if (hasShownCatalogSwipeHint) {
-    return;
-  }
+function renderCatalogPageIndicator() {
+  const indicator = document.getElementById("catalogPageIndicator");
+  indicator.setAttribute("aria-label", `図鑑 ${currentCatalogDetailIndex + 1} / ${catalogItems.length} ページ`);
+  indicator.innerHTML = catalogItems.map((item, index) => (
+    `<button class="catalog-page-dot${index === currentCatalogDetailIndex ? " is-current" : ""}" type="button" data-catalog-page-index="${index}" aria-label="${index + 1}ページへ移動"${index === currentCatalogDetailIndex ? " aria-current=\"page\"" : ""}></button>`
+  )).join("");
 
-  hasShownCatalogSwipeHint = true;
-  const detailBook = document.getElementById("catalogDetailBook");
-  detailBook.classList.add("show-swipe-hint");
-  detailBook.addEventListener("animationend", () => {
-    detailBook.classList.remove("show-swipe-hint");
-  }, { once: true });
+  indicator.querySelectorAll("[data-catalog-page-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      showCatalogDetail(catalogItems[Number(button.dataset.catalogPageIndex)].id);
+    });
+  });
 }
 
 function renderCatalogDetail(catalogItem) {
