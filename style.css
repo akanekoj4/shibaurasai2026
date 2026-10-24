@@ -1,10 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap");
 
-:root { --ink: #000; --screen: #f9f3fe; }
+:root { --ink: #000; --screen: #f9f3fe; --app-width: min(393px, 100vw); }
 * { box-sizing: border-box; }
-body { min-height: 100vh; margin: 0; background: var(--screen); color: var(--ink); font-family: "Kiwi Maru", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; }
+html, body { width: 100%; overflow-x: hidden; }
+body { min-height: 100vh; min-height: 100dvh; margin: 0; background: var(--screen); color: var(--ink); font-family: "Kiwi Maru", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; }
 button, a { font: inherit; }
-.app-shell { position: relative; width: min(100%, 393px); min-height: 829px; margin: 0 auto; padding: 80px 0 114px; background: var(--screen); }
+.app-shell { position: relative; width: var(--app-width); min-height: max(829px, 100dvh); margin: 0 auto; padding: 80px 0 114px; overflow: hidden; background: var(--screen); }
 h2, p { margin: 0; }
 .home-screen { display: grid; gap: 0; }
 #homeScreen[hidden] { display: none; }
@@ -103,8 +104,8 @@ h2, p { margin: 0; }
 .get-item-message { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; width: 216px; height: 54px; margin: 0; color: #000; font-size: 27px; font-weight: 500; line-height: normal; letter-spacing: normal; text-align: center; }
 .get-card-close { position: relative; z-index: 1; display: grid; place-items: center; width: 202px; height: 44px; padding: 1px 63px; border: 0; border-radius: 22px; background: #fd8ec4; box-shadow: 2px 3px 2px #e56ab3; color: #fff; font-family: inherit; font-size: 27px; font-weight: 500; line-height: normal; letter-spacing: normal; cursor: pointer; }
 .get-card-close:active { transform: translateY(1px); box-shadow: 1px 1px 1px #e56ab3; }
-.legacy-controls { position: fixed; top: 10px; left: 50%; z-index: 40; transform: translateX(-50%); }
-.legacy-controls button { padding: 6px 10px; border: 1px solid #b77aa2; border-radius: 999px; background: #fff; color: #7d3c68; font-family: inherit; font-size: 12px; cursor: pointer; }
+.legacy-controls { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 50%; z-index: 40; display: flex; width: min(377px, calc(100vw - 16px)); flex-wrap: wrap; justify-content: center; gap: 4px; transform: translateX(-50%); }
+.legacy-controls button { padding: 4px 8px; border: 1px solid #b77aa2; border-radius: 999px; background: #fff; color: #7d3c68; font-family: inherit; font-size: 11px; line-height: 16px; cursor: pointer; }
 body.catalog-view .legacy-controls { display: none; }
 .popup.show ~ .legacy-controls { display: none; }
 body.catalog-view .app-shell { margin-top: 0; margin-bottom: 0; }
@@ -128,8 +129,12 @@ body.catalog-view .app-shell { margin-top: 0; margin-bottom: 0; }
 
 @media (max-width: 392px) {
   .app-shell { width: 100%; }
+  .catalog-screen, .catalog-detail-screen { max-width: 100%; }
   .score-card { width: calc(100% - 29px); }
   .collection-section, .collection-section h2, .item-grid { width: min(344px, calc(100vw - 49px)); }
   .item-grid { grid-template-columns: repeat(2, minmax(0, 155px)); justify-content: space-between; column-gap: 0; }
 }
-@media (min-width: 700px) { body { background: #f7f7f7; } .app-shell { margin-top: 24px; margin-bottom: 24px; } }
+@media (min-width: 700px) {
+  body { background: #f7f7f7; }
+  .app-shell { margin-top: 24px; margin-bottom: 24px; box-shadow: 0 0 24px rgba(91, 67, 116, .12); }
+}
