@@ -89,6 +89,7 @@ const catalogItems = itemList.map((item) => ({
 }));
 
 let currentCatalogDetailIndex = 0;
+let hasShownCatalogSwipeHint = false;
 
 window.addEventListener("load", async () => {
   renderItems();
@@ -209,6 +210,20 @@ function showCatalogDetail(itemId) {
   document.getElementById("catalogDetailScreen").classList.add("is-active");
   document.getElementById("catalogDetailScreen").setAttribute("aria-hidden", "false");
   document.body.classList.add("catalog-view");
+  playCatalogSwipeHint();
+}
+
+function playCatalogSwipeHint() {
+  if (hasShownCatalogSwipeHint) {
+    return;
+  }
+
+  hasShownCatalogSwipeHint = true;
+  const detailBook = document.getElementById("catalogDetailBook");
+  detailBook.classList.add("show-swipe-hint");
+  detailBook.addEventListener("animationend", () => {
+    detailBook.classList.remove("show-swipe-hint");
+  }, { once: true });
 }
 
 function renderCatalogDetail(catalogItem) {
