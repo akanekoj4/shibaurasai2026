@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Current app: users/{uid} contains item flags and updatedAt.
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // Also support a future per-item collection without exposing other paths.
+      match /items/{itemId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // All other document paths are denied by default.
+  }
+}
