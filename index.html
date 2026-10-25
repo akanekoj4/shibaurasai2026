@@ -5,12 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>タッチコレクト</title>
-  <link rel="stylesheet" href="style.css?v=20261026-4">
+  <link rel="stylesheet" href="style.css?v=20261026-6">
 </head>
 
 <body>
   <div class="app-shell">
     <main id="homeScreen" class="home-screen app-view">
+      <button id="completionButton" class="completion-button" type="button" hidden>コンプリート画面を見る</button>
       <section class="score-card" aria-labelledby="scoreTitle">
         <div class="score-content">
           <h2 id="scoreTitle">回収率</h2>
@@ -30,6 +31,7 @@
 
     <main id="catalogScreen" class="catalog-screen app-view" aria-hidden="true" aria-labelledby="catalogTitle">
       <h1 id="catalogTitle" class="sr-only">図鑑</h1>
+      <p class="catalog-index-hint">アイテムをタッチして確認！</p>
       <img class="catalog-book" src="images/figma-catalog-book-figma.svg" alt="" aria-hidden="true">
       <img class="catalog-bookmark" src="images/figma-catalog-bookmark-figma.svg" alt="" aria-hidden="true">
       <section class="catalog-index" aria-label="図鑑の目次">
@@ -54,6 +56,7 @@
         <span id="catalogDetailBadgeText" class="catalog-detail-badge-text"></span>
       </div>
       <div id="catalogPageIndicator" class="catalog-page-indicator" aria-label="図鑑のページ位置"></div>
+      <p class="catalog-swipe-hint">← スワイプ →</p>
     </main>
 
     <section id="popup" class="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle" aria-hidden="true">
@@ -68,6 +71,14 @@
         <button id="popupCloseButton" class="get-card-close" type="button">OK！</button>
       </div>
     </section>
+
+    <dialog id="completionDialog" class="completion-dialog" aria-labelledby="completionTitle" aria-describedby="completionMessage">
+      <p class="completion-label">ALL COMPLETE!</p>
+      <h1 id="completionTitle">コンプリート！</h1>
+      <p id="completionMessage">すべての落とし物をみつけたよ！<br>集めてくれてありがとう！</p>
+      <div id="completionItems" class="completion-items"></div>
+      <button id="completionCloseButton" class="completion-button" type="button" autofocus>ホームへ戻る</button>
+    </dialog>
 
     <!-- ここボタンなのでいらない -->
     <div class="legacy-controls">
@@ -86,7 +97,7 @@
     </nav>
   </div>
 
-  <script type="module" src="main.js?v=20261026-5"></script>
+  <script type="module" src="main.js?v=20261026-6"></script>
 </body>
 
 </html>

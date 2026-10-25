@@ -13,6 +13,7 @@ h2, p { margin: 0; }
 .catalog-screen.is-active,
 .catalog-screen:target { display: block; }
 .app-shell:has(#catalogScreen:target) #homeScreen { display: none; }
+.catalog-index-hint { position: absolute; top: 90px; left: 0; z-index: 2; width: 100%; color: #765b91; font-family: "Kiwi Maru", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; text-align: center; }
 .catalog-book { position: absolute; top: 130.39px; left: -377.27px; width: 771.541px; height: 530.755px; pointer-events: none; }
 .catalog-bookmark { position: absolute; top: 134.24px; left: -11.13px; z-index: 1; width: 47.5687px; height: 254.279px; pointer-events: none; }
 .catalog-index { position: absolute; top: 165.46px; left: 37.25px; z-index: 2; width: 262.466px; height: 454.769px; }
@@ -66,6 +67,14 @@ h2, p { margin: 0; }
 .catalog-page-dot { display: block; width: 10px; height: 10px; padding: 0; border: 0; border-radius: 999px; background: #d0ced6; cursor: pointer; }
 .catalog-page-dot.is-current { width: 28px; background: #8875d8; }
 .catalog-page-dot:focus-visible { outline: 2px solid #5762f2; outline-offset: 3px; }
+.catalog-swipe-hint { position: absolute; top: 710px; left: 0; z-index: 4; width: 100%; color: #4e3a67; font-family: "Kiwi Maru", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; font-size: 12px; font-weight: 500; line-height: 1.5; text-align: center; pointer-events: none; animation: catalog-swipe-hint-fade 3s ease-in-out infinite; }
+@keyframes catalog-swipe-hint-fade {
+  0%, 100% { opacity: 0; }
+  50% { opacity: .3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .catalog-swipe-hint { opacity: .3; animation: none; }
+}
 
 .score-card { display: block; width: 364px; min-height: 201px; margin: 0 auto 10px; padding: 31px 139px 22px 29px; border: 3px solid #f7d9fc; border-radius: 8px; background: linear-gradient(270deg, #fcf6fe 0%, #fefcfd 100%); }
 .score-content h2, .collection-section h2 { font-size: 26px; font-weight: 500; line-height: normal; }
@@ -148,3 +157,15 @@ body.catalog-view .app-shell { margin-top: 0; margin-bottom: 0; }
 .get-item-image { width: 180px; height: 180px; }
 .get-item-message { width: 280px; height: auto; min-height: 54px; font-size: 21px; line-height: 1.4; }
 .rotate-left { transform: rotate(-90deg); }
+
+.completion-button { display: block; max-width: 100%; margin: 0 auto 18px; padding: 12px 22px; border: 0; border-radius: 24px; background: #fd8ec4; color: #542444; font: inherit; cursor: pointer; }
+.completion-button[hidden] { display: none; }
+.completion-button:focus-visible { outline: 3px solid #8875d8; outline-offset: 4px; }
+.completion-dialog { width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 32px 20px 20px; overflow-y: auto; border: 3px solid #ecd0fd; border-radius: 28px; background: #fefdf9; color: var(--ink); text-align: center; box-shadow: 0 12px 40px #66508240; }
+.completion-dialog::backdrop { background: rgba(148, 138, 165, .75); }
+.completion-label { color: #8875d8; font-size: 18px; letter-spacing: .1em; }
+.completion-dialog h1 { margin: 12px 0 16px; color: #b83a7b; font-size: clamp(22px, 7vw, 30px); }
+.completion-dialog p { line-height: 1.8; }
+.completion-items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 24px 0; }
+.completion-items img { width: 100%; aspect-ratio: 1; object-fit: contain; }
+.completion-dialog .completion-button { margin-bottom: 0; }

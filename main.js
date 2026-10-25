@@ -92,6 +92,7 @@ const catalogDescriptions = {
 
 let currentCatalogDetailIndex = 0;
 let resetInProgress = false;
+let completionPending = false;
 
 window.addEventListener("load", async () => {
   renderItems();
@@ -349,11 +350,27 @@ function collectItemFromUrl() {
 
 function getItem(itemName) {
   if (resetInProgress) return;
+  const wasComplete = isCollectionComplete();
   showFoundItem(itemName);
   localStorage.setItem(itemName, "true");
   saveToFirebase(itemName);
   updateScore();
+  completionPending = completionPending || (!wasComplete && isCollectionComplete());
   showPopup(items[itemName]);
+}
+
+function isCollectionComplete() {
+  const collectibleItems = itemList.filter((item) => !item.locked);
+  return collectibleItems.length > 0 && collectibleItems.every((item) => localStorage.getItem(item.id) === "true");
+}
+
+function showCompletion() {
+  if (!isCollectionComplete()) return;
+  const dialog = document.getElementById("completionDialog");
+  document.getElementById("completionItems").innerHTML = itemList.filter((item) => !item.locked).map((item) =>
+    `<img src="${item.image}" alt="${item.name}" class="${item.rotateLeft ? "rotate-left" : ""}">`
+  ).join("");
+  if (!dialog.open) dialog.showModal();
 }
 
 function showFoundItem(itemName) {
@@ -386,10 +403,18 @@ function updateScore() {
 
   document.getElementById("score").textContent = `${foundCount} / ${totalCount}`;
   document.getElementById("scoreProgress").style.width = `${percentage}%`;
+  document.getElementById("completionButton").hidden = !isCollectionComplete();
 }
 
 function bindPopup() {
   document.getElementById("popupCloseButton")?.addEventListener("click", hidePopup);
+  document.getElementById("completionButton").addEventListener("click", showCompletion);
+  document.getElementById("completionCloseButton").addEventListener("click", () => {
+    document.getElementById("completionDialog").close();
+    showView("home");
+    location.hash = "home";
+    document.getElementById("completionButton").focus();
+  });
 }
 
 function showPopup(item) {
@@ -418,6 +443,10 @@ function hidePopup() {
 
   popup.classList.remove("show");
   popup.setAttribute("aria-hidden", "true");
+  if (completionPending) {
+    completionPending = false;
+    showCompletion();
+  }
 }
 
 async function saveToFirebase(itemName) {
@@ -482,6 +511,8 @@ async function resetData() {
 }
 
 function clearLocalCollection() {
+  completionPending = false;
+  document.getElementById("completionDialog").close();
   itemList.forEach((item) => {
     const itemText = document.getElementById(item.id);
     const itemImage = document.getElementById(`${item.id}Image`);
