@@ -307,9 +307,19 @@ function loadFoundItems() {
 
 function collectItemFromUrl() {
   const params = new URLSearchParams(location.search);
-  const itemName = params.get("item");
+  // Keep storage IDs stable while accepting readable NFC URLs.
+  const urlItemIds = new Map([
+    ["watermelon-pouch", "wallet"],
+    ["bouquet", "key"],
+    ["pearl-strap", "bear"],
+    ["snow-globe", "item4"],
+    ["star-hairpin", "item5"],
+    ["panda-bento", "item6"]
+  ]);
+  const urlItem = params.get("item");
+  const itemName = urlItemIds.get(urlItem) ?? urlItem;
 
-  if (items[itemName] && !items[itemName].locked) {
+  if (Object.hasOwn(items, itemName) && !items[itemName].locked) {
     getItem(itemName);
   }
 }
