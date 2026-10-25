@@ -80,6 +80,15 @@ const items = Object.fromEntries(itemList.map((item) => [item.id, item]));
 
 const catalogItems = itemList;
 
+const catalogDescriptions = {
+  wallet: "「やったー！ぼくのスイカのポーチだ！かわいい顔が気に入って、いつも持ち歩いているんだ。これがないとなんだか落ち着かないから、戻ってきてくれてうれしいな！」",
+  key: "「あっ！探してたお花だ！きれいな青色にひと目ぼれして、思わず買っちゃったんだ。お部屋に飾るのを楽しみにしてたから、見つけてくれてありがとう！」",
+  bear: "「よかった！大切なブレスレットが見つかった！これは特別な日にプレゼントしてもらった宝物なんだ。なくしたと思って悲しかったから、本当にうれしいよ！」",
+  item4: "「見つけてくれてありがとう！これは冬のお出かけで買ってもらった、大切なスノードームなんだ。キラキラ舞う雪を見ていると、あの日の楽しかった思い出がよみがえるんだよ！」",
+  item5: "「あっ！お気に入りのヘアピン、見つけてくれたんだね！お出かけするときはいつも一緒だから、なくして困ってたんだ。これでまたおしゃれができるよ！」",
+  item6: "「わぁ！ぼくの大切なお弁当だ！ママに作ってもらった愛情たっぷりのおひるごはん！パンダのおにぎりがかわいくて食べるのが楽しみ！」"
+};
+
 let currentCatalogDetailIndex = 0;
 
 window.addEventListener("load", async () => {
@@ -107,7 +116,7 @@ function renderItems() {
 
   itemGrid.innerHTML = itemList.map((item) => {
     return `
-      <button class="item-card" type="button" data-item-id="${item.id}" ${item.locked ? "disabled" : ""}>
+      <button class="item-card" type="button" data-item-id="${item.id}">
         <span class="item-image-frame">
           ${renderItemImage(item)}
         </span>
@@ -161,6 +170,14 @@ function bindNavigation() {
   document.getElementById("catalogCards").addEventListener("click", (event) => {
     const card = event.target.closest("[data-catalog-item-id]");
     if (card) showCatalogDetail(card.dataset.catalogItemId);
+  });
+
+  document.getElementById("items").addEventListener("click", (event) => {
+    const card = event.target.closest("[data-item-id]");
+    if (!card) return;
+
+    showView("catalog");
+    showCatalogDetail(card.dataset.itemId);
   });
 }
 
@@ -234,7 +251,7 @@ function renderCatalogDetail(catalogItem) {
   image.alt = found ? item.name : "未発見のアイテム";
   image.classList.toggle("rotate-left", Boolean(item.rotateLeft));
   title.textContent = found ? item.name : "○○○○";
-  description.textContent = found ? `${item.name}をみつけた！` : "○○○○○○\n○○";
+  description.textContent = found ? catalogDescriptions[item.id] : "○○○○○○\n○○";
   badgeOuter.src = found
     ? "images/figma-catalog-found-badge-outer.svg"
     : "images/figma-catalog-unfound-badge-outer.svg";
