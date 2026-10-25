@@ -2,7 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/fireba
 import {
   getFirestore,
   doc,
-  setDoc
+  setDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 import {
   getAuth,
@@ -90,6 +91,7 @@ const catalogDescriptions = {
 };
 
 let currentCatalogDetailIndex = 0;
+let resetInProgress = false;
 
 window.addEventListener("load", async () => {
   renderItems();
@@ -108,7 +110,11 @@ window.addEventListener("load", async () => {
 
   loadFoundItems();
   updateScore();
-  collectItemFromUrl();
+  if (new URLSearchParams(location.search).get("reset") === "1") {
+    await resetData();
+  } else {
+    collectItemFromUrl();
+  }
 });
 
 function renderItems() {
@@ -342,6 +348,7 @@ function collectItemFromUrl() {
 }
 
 function getItem(itemName) {
+  if (resetInProgress) return;
   showFoundItem(itemName);
   localStorage.setItem(itemName, "true");
   saveToFirebase(itemName);
@@ -434,7 +441,47 @@ async function saveToFirebase(itemName) {
   }
 }
 
-function resetData() {
+async function resetData() {
+  if (resetInProgress) return;
+  if (!window.confirm("このブラウザの収集データと、現在の利用者のサーバー側の収集記録を削除します。よろしいですか？")) return;
+
+  const user = auth.currentUser;
+  if (!user) {
+    window.alert("ログインできていないため削除できません。通信状態を確認して、ページを再読み込みしてください。");
+    return;
+  }
+
+  resetInProgress = true;
+  const resetButton = document.getElementById("resetButton");
+  if (resetButton) {
+    resetButton.disabled = true;
+    resetButton.textContent = "削除中…";
+  }
+  try {
+    // Delete only the signed-in user's collection, before clearing local progress.
+    await deleteDoc(doc(db, "users", user.uid));
+    clearLocalCollection();
+    hidePopup();
+    showView("home");
+    const url = new URL(location.href);
+    url.searchParams.delete("reset");
+    url.searchParams.delete("item");
+    url.hash = "";
+    history.replaceState(null, "", url);
+    window.alert("このブラウザとサーバー側の収集データをリセットしました。");
+  } catch (error) {
+    console.error("リセットに失敗しました", error);
+    window.alert("リセットを完了できませんでした。通信状態を確認して、もう一度お試しください。");
+  } finally {
+    resetInProgress = false;
+    if (resetButton) {
+      resetButton.disabled = false;
+      resetButton.textContent = "データをリセット";
+    }
+  }
+}
+
+function clearLocalCollection() {
   itemList.forEach((item) => {
     const itemText = document.getElementById(item.id);
     const itemImage = document.getElementById(`${item.id}Image`);
