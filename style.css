@@ -84,7 +84,7 @@ h2, p { margin: 0; }
 .item-image-frame { display: grid; place-items: center; width: 91px; height: 42.468px; margin: 0; padding: 0; }
 .item-image-frame img { display: block; width: 71px; max-height: 42.468px; object-fit: contain; }
 .image-placeholder { display: block; width: 71px; height: 42.468px; background: #d9d9d9; }
-.item-name { display: grid; min-height: 14px; margin-top: 10px; padding: 0 10px; overflow-wrap: anywhere; font-family: Inter, sans-serif; font-size: 17px; font-weight: 400; line-height: normal; white-space: nowrap; }
+.item-name { display: grid; min-height: 14px; margin-top: 10px; padding: 0 10px; overflow-wrap: anywhere; font-family: inherit; font-size: 17px; font-weight: 500; line-height: normal; white-space: nowrap; }
 
 .popup { position: fixed; top: 0; left: 50%; z-index: 30; display: grid; place-items: start center; width: min(100%, 393px); height: 829px; min-height: 0; padding-top: 145.5px; background: rgba(148, 138, 165, .7); opacity: 0; pointer-events: none; transform: translateX(-50%); transition: opacity 160ms ease; }
 .popup.show { opacity: 1; pointer-events: auto; }
