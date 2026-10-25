@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>タッチコレクト</title>
-  <link rel="stylesheet" href="style.css?v=20261025-2">
+  <link rel="stylesheet" href="style.css?v=20261026-1">
 </head>
 
 <body>
@@ -14,7 +14,7 @@
       <section class="score-card" aria-labelledby="scoreTitle">
         <div class="score-content">
           <h2 id="scoreTitle">回収率</h2>
-          <p id="score" class="score-number">0 / 3</p>
+          <p id="score" class="score-number">0 / 6</p>
           <div class="progress-track" aria-hidden="true">
             <div id="scoreProgress" class="progress-fill"></div>
           </div>
@@ -70,11 +70,8 @@
     </section>
 
     <!-- ここボタンなのでいらない -->
-    <div class="legacy-controls" aria-hidden="true">
-      <button type="button" id="getWalletButton" tabindex="-1">財布を拾う</button>
-      <button type="button" id="getKeyButton" tabindex="-1">鍵を拾う</button>
-      <button type="button" id="getBearButton" tabindex="-1">ぬいぐるみを拾う</button>
-      <button type="button" id="resetButton" tabindex="-1">データをリセット</button>
+    <div class="legacy-controls">
+      <button type="button" id="resetButton">データをリセット</button>
     </div>
 
     <nav class="bottom-nav" aria-label="メインナビゲーション">
@@ -89,7 +86,7 @@
     </nav>
   </div>
 
-  <script type="module" src="main.js?v=20261025-2"></script>
+  <script type="module" src="main.js?v=20261026-1"></script>
 </body>
 
 </html>

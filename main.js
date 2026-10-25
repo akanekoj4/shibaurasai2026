@@ -23,70 +23,62 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// IDs are retained so existing collection URLs and saved progress still work.
 const itemList = [
   {
-    id: "wallet",
-    name: "財布",
-    unknown: "？？？",
-    image: "images/wallet.png",
-    shadowImage: "images/walletshadow.png",
-    message: "財布を発見！"
+    "id": "wallet",
+    "name": "すいかのポーチ",
+    "unknown": "？？？",
+    "image": "images/すいかのポーチ.png",
+    "shadowImage": "images/すいかのポーチsd.png",
+    "message": "すいかのポーチを発見！"
   },
   {
-    id: "key",
-    name: "鍵",
-    unknown: "？？",
-    image: "images/key.png",
-    shadowImage: "images/keyshadow.png",
-    message: "鍵を発見！"
+    "id": "key",
+    "name": "ちいさな花束",
+    "unknown": "？？？",
+    "image": "images/ちいさな花束.png",
+    "shadowImage": "images/ちいさな花束sd.png",
+    "message": "ちいさな花束を発見！"
   },
   {
-    id: "bear",
-    name: "ぬいぐるみ",
-    unknown: "？？？？？",
-    image: "images/bear.png",
-    shadowImage: "images/bearshadow.png",
-    message: "ぬいぐるみを発見！"
+    "id": "bear",
+    "name": "真珠のストラップ",
+    "unknown": "？？？",
+    "image": "images/真珠のストラップ.png",
+    "shadowImage": "images/真珠のストラップsd.png",
+    "message": "真珠のストラップを発見！"
   },
   {
-    id: "item4",
-    name: "アイテム4",
-    unknown: "？？？？",
-    image: "",
-    shadowImage: "",
-    message: "アイテムを発見！",
-    locked: true
+    "id": "item4",
+    "name": "雪だるまのスノードーム",
+    "unknown": "？？？",
+    "image": "images/雪だるまのスノードーム.png",
+    "shadowImage": "images/雪だるまのスノードームsd.png",
+    "message": "雪だるまのスノードームを発見！",
+    "rotateLeft": true
   },
   {
-    id: "item5",
-    name: "アイテム5",
-    unknown: "？？？？",
-    image: "",
-    shadowImage: "",
-    message: "アイテムを発見！",
-    locked: true
+    "id": "item5",
+    "name": "お星さまのヘアピン",
+    "unknown": "？？？",
+    "image": "images/お星さまのヘアピン.png",
+    "shadowImage": "images/お星さまのヘアピンsd.png",
+    "message": "お星さまのヘアピンを発見！"
   },
   {
-    id: "item6",
-    name: "アイテム6",
-    unknown: "？？？？",
-    image: "",
-    shadowImage: "",
-    message: "アイテムを発見！",
-    locked: true
+    "id": "item6",
+    "name": "パンダのお弁当",
+    "unknown": "？？？",
+    "image": "images/パンダのお弁当.png",
+    "shadowImage": "images/パンダのお弁当sd.png",
+    "message": "パンダのお弁当を発見！"
   }
 ];
 
 const items = Object.fromEntries(itemList.map((item) => [item.id, item]));
 
-const catalogItems = itemList.map((item) => ({
-  id: item.id,
-  name: item.name,
-  // Figma の図鑑目次ノード（23:93）にある固定ラベル。
-  catalogLabel: "○○○○",
-  // 透明背景の画像を追加するときは、ここへ "images/xxx.png" を設定します。
-  catalogImage: ""
-}));
+const catalogItems = itemList;
 
 let currentCatalogDetailIndex = 0;
 
@@ -134,14 +126,13 @@ function renderCatalogIndex() {
   }
 
   catalogCards.innerHTML = catalogItems.map((item) => {
-    const image = item.catalogImage
-      ? `<img class="catalog-card-image" src="${item.catalogImage}" alt="">`
-      : `<span class="catalog-card-placeholder" aria-hidden="true"></span>`;
+    const found = localStorage.getItem(item.id) === "true";
+    const image = `<img class="catalog-card-image${item.rotateLeft ? " rotate-left" : ""}" src="${found ? item.image : item.shadowImage}" alt="">`;
 
     return `
       <button class="catalog-card" type="button" data-catalog-item-id="${item.id}">
         <span class="catalog-card-image-frame">${image}</span>
-        <span class="catalog-card-name">${item.catalogLabel}</span>
+        <span class="catalog-card-name">${found ? item.name : item.unknown}</span>
       </button>
     `;
   }).join("");
@@ -167,10 +158,9 @@ function bindNavigation() {
 
   showView(location.hash === "#catalog" ? "catalog" : "home");
 
-  document.querySelectorAll("[data-catalog-item-id]").forEach((card) => {
-    card.addEventListener("click", () => {
-      showCatalogDetail(card.dataset.catalogItemId);
-    });
+  document.getElementById("catalogCards").addEventListener("click", (event) => {
+    const card = event.target.closest("[data-catalog-item-id]");
+    if (card) showCatalogDetail(card.dataset.catalogItemId);
   });
 }
 
@@ -240,13 +230,9 @@ function renderCatalogDetail(catalogItem) {
 
   detailScreen.classList.toggle("is-found", found);
   detailScreen.classList.toggle("is-unfound", !found);
-  if (found && item.image) {
-    image.src = item.image;
-    image.alt = item.name;
-  } else {
-    image.removeAttribute("src");
-    image.alt = "";
-  }
+  image.src = found ? item.image : item.shadowImage;
+  image.alt = found ? item.name : "未発見のアイテム";
+  image.classList.toggle("rotate-left", Boolean(item.rotateLeft));
   title.textContent = found ? item.name : "○○○○";
   description.textContent = found ? `${item.name}をみつけた！` : "○○○○○○\n○○";
   badgeOuter.src = found
@@ -293,24 +279,19 @@ function renderItemImage(item) {
     return `<span id="${item.id}Image" class="image-placeholder" aria-hidden="true"></span>`;
   }
 
-  return `<img id="${item.id}Image" src="${item.shadowImage}" alt="${item.name}">`;
+  return `<img id="${item.id}Image" class="${item.rotateLeft ? "rotate-left" : ""}" src="${item.shadowImage}" alt="未発見のアイテム">`;
 }
 
 function bindLegacyButtons() {
-  const buttonMap = {
-    getWalletButton: "wallet",
-    getKeyButton: "key",
-    getBearButton: "bear"
-  };
-
-  Object.entries(buttonMap).forEach(([buttonId, itemId]) => {
-    const button = document.getElementById(buttonId);
-
-    if (button) {
-      button.addEventListener("click", () => {
-        getItem(itemId);
-      });
-    }
+  const controls = document.querySelector(".legacy-controls");
+  controls.querySelectorAll("[data-collect-item]").forEach((button) => button.remove());
+  itemList.forEach((item) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.collectItem = item.id;
+    button.textContent = `${item.name}を拾う`;
+    button.addEventListener("click", () => getItem(item.id));
+    controls.prepend(button);
   });
 
   document.getElementById("resetButton")?.addEventListener("click", resetData);
@@ -354,12 +335,14 @@ function showFoundItem(itemName) {
 
   if (itemImage.tagName === "IMG" && item.image) {
     itemImage.src = item.image;
+    itemImage.alt = item.name;
   }
 
   document.querySelector(`[data-item-id="${itemName}"]`)?.classList.add("found");
 }
 
 function updateScore() {
+  renderCatalogIndex();
   const collectibleItems = itemList.filter((item) => !item.locked);
   const foundCount = collectibleItems.filter((item) => {
     return localStorage.getItem(item.id) === "true";
@@ -387,6 +370,7 @@ function showPopup(item) {
   title.textContent = `${item.name}をみつけた！`;
   image.src = item.image || item.shadowImage;
   image.alt = item.name;
+  image.classList.toggle("rotate-left", Boolean(item.rotateLeft));
   popup.setAttribute("aria-hidden", "false");
   popup.classList.add("show");
 }
@@ -436,6 +420,7 @@ function resetData() {
 
     if (itemImage?.tagName === "IMG" && item.shadowImage) {
       itemImage.src = item.shadowImage;
+      itemImage.alt = "未発見のアイテム";
     }
 
     document.querySelector(`[data-item-id="${item.id}"]`)?.classList.remove("found");
