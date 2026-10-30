@@ -8,6 +8,8 @@ button, a { font: inherit; }
 .app-shell { position: relative; width: var(--app-width); min-height: max(829px, 100dvh); margin: 0 auto; padding: 80px 0 114px; overflow: hidden; background: var(--screen); }
 h2, p { margin: 0; }
 .home-screen { display: grid; gap: 0; }
+.home-header { display: flex; justify-content: flex-end; align-items: center; height: 64px; margin: -72px 15px 8px; }
+.home-logo { display: block; width: 128px; max-width: 100%; height: auto; }
 #homeScreen[hidden] { display: none; }
 .catalog-screen { display: none; position: relative; width: 393px; height: 783px; min-height: 783px; margin: -80px auto -114px; overflow: hidden; background: #e7dbfc; }
 .catalog-screen.is-active,
