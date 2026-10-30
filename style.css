@@ -109,10 +109,6 @@ h2, p { margin: 0; }
 .get-item-message { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; width: 216px; height: 54px; margin: 0; color: #000; font-size: 27px; font-weight: 500; line-height: normal; letter-spacing: normal; text-align: center; }
 .get-card-close { position: relative; z-index: 1; display: grid; place-items: center; width: 202px; height: 44px; padding: 1px 63px; border: 0; border-radius: 22px; background: #fd8ec4; box-shadow: 2px 3px 2px #e56ab3; color: #fff; font-family: inherit; font-size: 27px; font-weight: 500; line-height: normal; letter-spacing: normal; cursor: pointer; }
 .get-card-close:active { transform: translateY(1px); box-shadow: 1px 1px 1px #e56ab3; }
-.legacy-controls { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 50%; z-index: 40; display: flex; width: min(377px, calc(100vw - 16px)); flex-wrap: wrap; justify-content: center; gap: 4px; transform: translateX(-50%); }
-.legacy-controls button { padding: 4px 8px; border: 1px solid #b77aa2; border-radius: 999px; background: #fff; color: #7d3c68; font-family: inherit; font-size: 11px; line-height: 16px; cursor: pointer; }
-body.catalog-view .legacy-controls { display: none; }
-.popup.show ~ .legacy-controls { display: none; }
 body.catalog-view .app-shell { margin-top: 0; margin-bottom: 0; }
 
 .bottom-nav { position: fixed; right: 0; bottom: 0; left: 0; z-index: 10; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 393px); height: 74px; margin: 0 auto; padding: 48px 0 12px; background: #fffdfe; box-shadow: 0 -3px 3px #eae4fd; }

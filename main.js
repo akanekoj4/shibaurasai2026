@@ -98,7 +98,6 @@ window.addEventListener("load", async () => {
   renderItems();
   renderCatalogIndex();
   bindCatalogDetailSwipe();
-  bindLegacyButtons();
   bindPopup();
   bindNavigation();
 
@@ -306,21 +305,6 @@ function renderItemImage(item) {
   return `<img id="${item.id}Image" class="${item.rotateLeft ? "rotate-left" : ""}" src="${item.shadowImage}" alt="未発見のアイテム">`;
 }
 
-function bindLegacyButtons() {
-  const controls = document.querySelector(".legacy-controls");
-  controls.querySelectorAll("[data-collect-item]").forEach((button) => button.remove());
-  itemList.forEach((item) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.collectItem = item.id;
-    button.textContent = `${item.name}を拾う`;
-    button.addEventListener("click", () => getItem(item.id));
-    controls.prepend(button);
-  });
-
-  document.getElementById("resetButton")?.addEventListener("click", resetData);
-}
-
 function loadFoundItems() {
   itemList.forEach((item) => {
     if (localStorage.getItem(item.id) === "true") {
@@ -481,11 +465,6 @@ async function resetData() {
   }
 
   resetInProgress = true;
-  const resetButton = document.getElementById("resetButton");
-  if (resetButton) {
-    resetButton.disabled = true;
-    resetButton.textContent = "削除中…";
-  }
   try {
     // Delete only the signed-in user's collection, before clearing local progress.
     await deleteDoc(doc(db, "users", user.uid));
@@ -503,10 +482,6 @@ async function resetData() {
     window.alert("リセットを完了できませんでした。通信状態を確認して、もう一度お試しください。");
   } finally {
     resetInProgress = false;
-    if (resetButton) {
-      resetButton.disabled = false;
-      resetButton.textContent = "データをリセット";
-    }
   }
 }
 
