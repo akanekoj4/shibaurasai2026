@@ -387,7 +387,13 @@ function updateScore() {
 
   document.getElementById("score").textContent = `${foundCount} / ${totalCount}`;
   document.getElementById("scoreProgress").style.width = `${percentage}%`;
-  document.getElementById("completionButton").hidden = !isCollectionComplete();
+  const complete = isCollectionComplete();
+  document.getElementById("completionButton").hidden = !complete;
+  const character = document.getElementById("collectionCharacter");
+  character.src = complete ? "images/character-complete.png" : "images/character-please.png";
+  character.alt = complete
+    ? "すべての落とし物が見つかって元気に喜ぶキャラクター"
+    : "落とし物を探してね、とお願いするキャラクター";
 }
 
 function bindPopup() {

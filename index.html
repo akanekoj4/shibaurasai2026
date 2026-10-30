@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>タッチコレクト</title>
-  <link rel="stylesheet" href="style.css?v=20261026-6">
+  <link rel="stylesheet" href="style.css?v=20261031-1">
 </head>
 
 <body>
@@ -20,7 +20,9 @@
             <div id="scoreProgress" class="progress-fill"></div>
           </div>
         </div>
-        <div class="character-slot" aria-label="キャラクター画像の配置予定エリア"></div>
+        <div class="character-slot">
+          <img id="collectionCharacter" src="images/character-please.png" alt="落とし物を探してね、とお願いするキャラクター" width="463" height="590">
+        </div>
       </section>
 
       <section class="collection-section" aria-labelledby="itemListTitle">
@@ -92,7 +94,7 @@
     </nav>
   </div>
 
-  <script type="module" src="main.js?v=20261026-6"></script>
+  <script type="module" src="main.js?v=20261031-1"></script>
 </body>
 
 </html>
